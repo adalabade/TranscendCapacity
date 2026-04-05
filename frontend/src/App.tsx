@@ -2,17 +2,9 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import Dashboard from './pages/Dashboard';
 import Resources from './pages/Resources';
+import Allocations from './pages/Allocations';
 import Settings from './pages/Settings';
 
-function Placeholder({ title }: { title: string }) {
-  return (
-    <div className="flex flex-col items-center justify-center h-64 text-gray-300">
-      <div className="text-6xl mb-4">🚧</div>
-      <h2 className="text-xl font-black text-gray-400 capitalize">{title}</h2>
-      <p className="text-sm text-gray-300 mt-1">Coming soon</p>
-    </div>
-  );
-}
 
 export default function App() {
   return (
@@ -24,7 +16,7 @@ export default function App() {
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/resources" element={<Resources />} />
-              <Route path="/allocations" element={<Placeholder title="Allocations" />} />
+              <Route path="/allocations" element={<Allocations />} />
               <Route path="/settings" element={<Settings />} />
             </Routes>
           </div>

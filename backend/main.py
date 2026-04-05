@@ -128,6 +128,26 @@ def create_allocation(allocation: models.Allocation, session: Session = Depends(
     session.refresh(allocation)
     return allocation
 
+@app.put("/api/allocations/{res_id}/{rel_id}/{spr_id}/{asgn_id}", response_model=models.Allocation)
+def update_allocation(res_id: int, rel_id: int, spr_id: int, asgn_id: int, updated: models.Allocation, session: Session = Depends(database.get_session)):
+    db_item = session.get(models.Allocation, (res_id, rel_id, spr_id, asgn_id))
+    if not db_item:
+        raise HTTPException(status_code=404, detail="Allocation not found")
+    db_item.AllocationValue = updated.AllocationValue
+    session.add(db_item)
+    session.commit()
+    session.refresh(db_item)
+    return db_item
+
+@app.delete("/api/allocations/{res_id}/{rel_id}/{spr_id}/{asgn_id}")
+def delete_allocation(res_id: int, rel_id: int, spr_id: int, asgn_id: int, session: Session = Depends(database.get_session)):
+    db_item = session.get(models.Allocation, (res_id, rel_id, spr_id, asgn_id))
+    if not db_item:
+        raise HTTPException(status_code=404, detail="Allocation not found")
+    session.delete(db_item)
+    session.commit()
+    return {"ok": True}
+
 # ─── Serve React SPA (MUST be last — catches all non-API routes) ──────────────
 if STATIC_DIR.exists():
     app.mount("/assets", StaticFiles(directory=STATIC_DIR / "assets"), name="assets")
