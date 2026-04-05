@@ -83,6 +83,25 @@ The application will be available at [http://localhost:8000](http://localhost:80
 
 ---
 
+## 🐋 Deployment with Docker (VPS)
+
+The project is optimized for deployment on a VPS using **Docker** and **Traefik** for automatic SSL/TLS.
+
+### 1. Configure the environment
+Ensure your VPS has a Docker network named `cappy-park-crm_default` (or adjust the `name` in `docker-compose.yml`).
+
+### 2. Build and Run
+Copy the project to your VPS and run:
+
+```bash
+docker-compose up --build -d
+```
+
+### 3. Verification
+The app will be available at [https://allocmvp.askbel.tech](https://allocmvp.askbel.tech) with automatic SSL certificates managed by Traefik.
+
+---
+
 ## 📂 System Records
 -   **Database**: Managed via `backend/database.db`.
 -   **API Documentation**: Interactive Swagger docs available at `/docs` when the server is running.

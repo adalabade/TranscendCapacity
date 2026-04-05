@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: alloc_mvp
+    restart: always
+    volumes:
+      # Direct persistence for the SQLite database
+      - ./backend/database.db:/app/backend/database.db
+    networks:
+      - cappy_network
+    labels:
+      - "traefik.enable=true"
+      # DOMAIN
+      - "traefik.http.routers.allocmvp.rule=Host(`allocmvp.askbel.tech`)"
+      # ENTRYPOINT (websecure = 443 with SSL)
+      - "traefik.http.routers.allocmvp.entrypoints=websecure"
+      # SSL (Using letsencrypt resolver as per MANTELITO model)
+      - "traefik.http.routers.allocmvp.tls.certresolver=letsencrypt"
+      # INTERNAL PORT (FastAPI runs on 8000 inside the container)
+      - "traefik.http.services.allocmvp.loadbalancer.server.port=8000"
+
+networks:
+  cappy_network:
+    external: true
+    # Using the existing network from your environment (Cappy Park CRM)
+    name: cappy-park-crm_default
