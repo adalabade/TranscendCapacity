@@ -1,11 +1,12 @@
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Users, CalendarCheck, Settings } from 'lucide-react';
+import { LayoutDashboard, Users, Settings, Database, FileSpreadsheet } from 'lucide-react';
 
 const menuItems = [
   { name: 'Dashboard', icon: LayoutDashboard, path: '/' },
   { name: 'Resources', icon: Users, path: '/resources' },
-  { name: 'Allocations', icon: CalendarCheck, path: '/allocations' },
-  { name: 'Settings', icon: Settings, path: '/settings' },
+  { path: '/allocations', icon: Database, name: 'Allocations' },
+  { path: '/export', icon: FileSpreadsheet, name: 'PowerBI Export' },
+  { path: '/settings', icon: Settings, name: 'Settings' },
 ];
 
 export default function Sidebar() {

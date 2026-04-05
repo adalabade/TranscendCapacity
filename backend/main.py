@@ -148,6 +148,51 @@ def delete_allocation(res_id: int, rel_id: int, spr_id: int, asgn_id: int, sessi
     session.commit()
     return {"ok": True}
 
+
+@app.get("/api/export-data")
+def export_data(session: Session = Depends(database.get_session)):
+    # Perform a sequence of outer joins to get a flat dataset
+    statement = (
+        select(
+            models.Resource.ResourceName,
+            models.Role.RoleDescription,
+            models.Company.CompanyDescription,
+            models.Country.CountryID,
+            models.ProcessTeam.ProcessTeamDescription,
+            models.Release.ReleaseDescription,
+            models.Sprint.SprintDescription,
+            models.Assignment.AssignmentDescription,
+            models.Allocation.AllocationValue
+        )
+        .join(models.Allocation, models.Resource.ResourceID == models.Allocation.ResourceID, isouter=True)
+        .join(models.Role, models.Resource.RoleID == models.Role.RoleID, isouter=True)
+        .join(models.Company, models.Resource.CompanyID == models.Company.CompanyID, isouter=True)
+        .join(models.Country, models.Resource.CountryID == models.Country.CountryID, isouter=True)
+        .join(models.ProcessTeam, models.Resource.ProcessTeamID == models.ProcessTeam.ProcessTeamID, isouter=True)
+        .join(models.Release, models.Allocation.ReleaseID == models.Release.ReleaseID, isouter=True)
+        .join(models.Sprint, models.Allocation.SprintID == models.Sprint.SprintID, isouter=True)
+        .join(models.Assignment, models.Allocation.AssignmentID == models.Assignment.AssignmentID, isouter=True)
+    )
+    
+    results = session.exec(statement).all()
+    
+    # Flatten and handle nulls
+    flat = []
+    for r in results:
+        flat.append({
+            "Resource":   r.ResourceName or "-",
+            "Role":       r.RoleDescription or "-",
+            "Company":    r.CompanyDescription or "-",
+            "Country":    r.CountryID or "-",
+            "Team":       r.ProcessTeamDescription or "-",
+            "Release":    r.ReleaseDescription or "Unassigned",
+            "Sprint":     r.SprintDescription or "Unassigned",
+            "Assignment": r.AssignmentDescription or "N/A",
+            "Allocation": float(r.AllocationValue) if r.AllocationValue is not None else 0.0
+        })
+    
+    return flat
+
 # ─── Serve React SPA (MUST be last — catches all non-API routes) ──────────────
 if STATIC_DIR.exists():
     app.mount("/assets", StaticFiles(directory=STATIC_DIR / "assets"), name="assets")
