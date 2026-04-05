@@ -1,5 +1,5 @@
 # --- Stage 1: Build the Frontend ---
-FROM node:18 AS frontend-builder
+FROM node:20 AS frontend-builder
 WORKDIR /app/frontend
 
 # Copy frontend source and build
