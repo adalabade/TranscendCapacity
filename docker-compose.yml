@@ -6,7 +6,7 @@ services:
     container_name: alloc_mvp
     restart: always
     ports:
-      - "8000:8000"
+      - "8221:8000"
     volumes:
       # Direct persistence for the SQLite database
       - ./backend/database.db:/app/backend/database.db
